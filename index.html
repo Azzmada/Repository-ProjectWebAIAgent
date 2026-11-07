@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerbangLebih - Pesan Tiket Pesawat Mudah & Terpercaya</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Kustom -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0ea5e9', // Biru Cerah
+                        primaryDark: '#0284c7',
+                        accent: '#f97316', // Oranye
+                        accentDark: '#ea580c',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom CSS untuk animasi smooth & scrollbar */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-size: 16px; /* Minimal 16px untuk body text */
+        }
+        /* Sembunyikan scrollbar untuk tab */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* FAQ Accordion Smooth Animation */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 1.5rem;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        /* Efek Zoom gambar destinasi */
+        .card-img-container {
+            overflow: hidden;
+        }
+        .card-img-container img {
+            transition: transform 0.4s ease;
+        }
+        .group:hover .card-img-container img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- ========================================== -->
+    <!-- 1. NAVBAR -->
+    <!-- ========================================== -->
+    <nav id="navbar" class="fixed w-full z-50 bg-white transition-all duration-300 py-4 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer">
+                <div class="bg-primary text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-plane-departure text-2xl"></i>
+                </div>
+                <span class="text-2xl font-bold text-gray-900 tracking-tight">TerbangLebih</span>
+            </div>
+
+            <!-- Menu Tengah (Desktop) -->
+            <div class="hidden md:flex items-center space-x-8 text-gray-600 font-medium text-lg">
+                <a href="#" class="text-primary hover:text-primaryDark transition-colors">Home</a>
+                <a href="#" class="hover:text-primary transition-colors">Pesawat</a>
+                <a href="#" class="hover:text-primary transition-colors">Hotel</a>
+                <a href="#" class="hover:text-primary transition-colors">Promo</a>
+                <a href="#" class="hover:text-primary transition-colors">Bantuan</a>
+            </div>
+
+            <!-- Sisi Kanan -->
+            <div class="flex items-center space-x-4">
+                <!-- Dropdown Bahasa/Mata Uang -->
+                <button class="hidden lg:flex items-center gap-2 text-gray-600 hover:text-primary font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>IDR | ID</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                <!-- Tombol Login -->
+                <button class="bg-primary hover:bg-primaryDark text-white px-6 py-2.5 rounded-full font-semibold text-lg transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                    Login / Daftar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- 2. HERO SECTION & SEARCH WIDGET -->
+    <!-- ========================================== -->
+    <header class="relative bg-gray-900 h-[650px] flex items-center justify-center overflow-hidden mt-16">
+        <!-- Background Image -->
+        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Pesawat Terbang" class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30"></div>
+
+        <div class="relative z-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+            <!-- Headline -->
+            <div class="text-center mb-10">
+                <h1 class="text-5xl lg:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-lg">
+                    Terbang Lebih Mudah, <br> Jelajahi Dunia
+                </h1>
+                <p class="text-xl text-gray-100 max-w-2xl mx-auto font-light drop-shadow-md">
+                    Dapatkan harga tiket pesawat terbaik ke destinasi impian Anda. Pesan sekarang, terbang dengan tenang.
+                </p>
+            </div>
+
+            <!-- SEARCH WIDGET (Floating Box) -->
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl p-6">
+                <!-- Tabs -->
+                <div class="flex space-x-6 border-b border-gray-200 mb-6 pb-2">
+                    <button class="tab-btn active text-primary font-bold text-lg pb-2 border-b-4 border-primary transition-all" data-target="round-trip">Pulang Pergi</button>
+                    <button class="tab-btn text-gray-500 hover:text-gray-800 font-semibold text-lg pb-2 border-b-4 border-transparent transition-all" data-target="one-way">Sekali Jalan</button>
+                    <button class="tab-btn text-gray-500 hover:text-gray-800 font-semibold text-lg pb-2 border-b-4 border-transparent transition-all" data-target="multi-city">Multi-Kota</button>
+                </div>
+
+                <!-- Form Inputs -->
+                <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                    <!-- Dari -->
+                    <div class="lg:col-span-1 relative">
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Dari</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-plane-departure absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" placeholder="Kota Asal" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-lg transition-shadow" value="Jakarta (CGK)">
+                        </div>
+                    </div>
+
+                    <!-- Ke -->
+                    <div class="lg:col-span-1 relative">
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Ke</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-plane-arrival absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" placeholder="Kota Tujuan" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-lg transition-shadow" value="Bali (DPS)">
+                        </div>
+                    </div>
+
+                    <!-- Tanggal Berangkat -->
+                    <div class="lg:col-span-1">
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Berangkat</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-calendar absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="date" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-lg text-gray-700 transition-shadow cursor-pointer">
+                        </div>
+                    </div>
+
+                    <!-- Tanggal Pulang -->
+                    <div class="lg:col-span-1">
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Pulang</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-calendar absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="date" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-lg text-gray-700 transition-shadow cursor-pointer">
+                        </div>
+                    </div>
+
+                    <!-- Tombol Cari -->
+                    <div class="lg:col-span-1">
+                        <button type="button" class="w-full bg-accent hover:bg-accentDark text-white font-bold text-lg py-3.5 rounded-xl shadow-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i> Cari Tiket
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Info Tambahan -->
+                <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
+                    <div class="flex items-center gap-2 cursor-pointer hover:text-primary transition">
+                        <i class="fa-solid fa-user-plus"></i> Tambah Penumpang & Kelas (1 Dewasa, Ekonomi)
+                    </div>
+                    <div class="text-green-600 font-medium">
+                        <i class="fa-solid fa-shield-halved"></i> Pembayaran Aman & Terpercaya
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- 3. SECTION REKOMENDASI -->
+    <!-- ========================================== -->
+    <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Rekomendasi Penerbangan Eksklusif</h2>
+                <p class="text-gray-500 text-lg">Pilih destinasi impian Anda dengan harga terbaik bulan ini.</p>
+            </div>
+            <a href="#" class="text-primary font-semibold text-lg hover:underline flex items-center gap-2">
+                Lihat Semua <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="card-img-container h-48 w-full">
+                    <img src="https://images.unsplash.com/photo-1542314831-c6a4d1424b94?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Jakarta" class="w-full h-full object-cover">
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-gray-500 mb-1">Jakarta</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3"><i class="fa-solid fa-plane text-primary text-sm mr-1"></i> Ke Kuala Lumpur</h3>
+                    <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+                        <span class="text-gray-500 text-sm">Mulai dari</span>
+                        <span class="text-accent font-bold text-lg">Rp 906.329</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="card-img-container h-48 w-full">
+                    <img src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Singapore" class="w-full h-full object-cover">
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-gray-500 mb-1">Jakarta</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3"><i class="fa-solid fa-plane text-primary text-sm mr-1"></i> Ke Singapore</h3>
+                    <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+                        <span class="text-gray-500 text-sm">Mulai dari</span>
+                        <span class="text-accent font-bold text-lg">Rp 911.400</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="card-img-container h-48 w-full">
+                    <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Bali" class="w-full h-full object-cover">
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-gray-500 mb-1">Jakarta</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3"><i class="fa-solid fa-plane text-primary text-sm mr-1"></i> Ke Bali Denpasar</h3>
+                    <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+                        <span class="text-gray-500 text-sm">Mulai dari</span>
+                        <span class="text-accent font-bold text-lg">Rp 1.512.349</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="card-img-container h-48 w-full">
+                    <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Surabaya" class="w-full h-full object-cover">
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-gray-500 mb-1">Bali Denpasar</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3"><i class="fa-solid fa-plane text-primary text-sm mr-1"></i> Ke Surabaya</h3>
+                    <div class="flex justify-between items-center border-t border-gray-100 pt-3">
+                        <span class="text-gray-500 text-sm">Mulai dari</span>
+                        <span class="text-accent font-bold text-lg">Rp 796.040</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. SECTION FLIGHT RESULTS (SIMULASI) -->
+    <!-- ========================================== -->
+    <section class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Hasil Pencarian Penerbangan</h2>
+                <p class="text-gray-600 text-lg">Jakarta (CGK) <i class="fa-solid fa-arrow-right mx-2 text-primary"></i> Bali (DPS) | 1 Dewasa | Ekonomi</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Kiri: Filter -->
+                <aside class="w-full lg:w-1/4">
+                    <div class="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 border-b pb-3">Filter</h3>
+                        
+                        <!-- Filter Harga -->
+                        <div class="mb-8">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex justify-between items-center cursor-pointer">
+                                Harga <i class="fa-solid fa-chevron-up text-sm text-gray-400"></i>
+                            </h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary">
+                                    <span class="text-gray-600">Di bawah Rp 1.000.000</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
+                                    <span class="text-gray-600">Rp 1.000.000 - Rp 2.000.000</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary">
+                                    <span class="text-gray-600">Di atas Rp 2.000.000</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Filter Maskapai -->
+                        <div class="mb-8">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex justify-between items-center cursor-pointer">
+                                Maskapai <i class="fa-solid fa-chevron-up text-sm text-gray-400"></i>
+                            </h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
+                                    <span class="text-gray-600">Garuda Indonesia</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary">
+                                    <span class="text-gray-600">Lion Air</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
+                                    <span class="text-gray-600">Batik Air</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 rounded-xl transition">Reset Filter</button>
+                    </div>
+                </aside>
+
+                <!-- Kanan: List Penerbangan -->
+                <div class="w-full lg:w-3/4 space-y-4">
+                    
+                    <!-- Flight Card 1 -->
+                    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between transition-all duration-300">
+                        <!-- Maskapai -->
+                        <div class="flex items-center gap-4 w-full md:w-1/4 mb-4 md:mb-0">
+                            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-plane text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Garuda Indonesia</h4>
+                                <p class="text-sm text-gray-500">GA-402</p>
+                            </div>
+                        </div>
+
+                        <!-- Jam & Rute -->
+                        <div class="flex items-center justify-between w-full md:w-2/4 mb-4 md:mb-0 px-0 md:px-6">
+                            <div class="text-center md:text-left">
+                                <p class="text-2xl font-bold text-gray-900">08:00</p>
+                                <p class="text-sm text-gray-500">CGK</p>
+                            </div>
+                            <div class="flex flex-col items-center px-4 flex-1">
+                                <p class="text-sm text-gray-500 mb-1">1j 45m</p>
+                                <div class="w-full flex items-center">
+                                    <div class="h-0.5 bg-gray-300 flex-1"></div>
+                                    <i class="fa-solid fa-plane text-gray-400 mx-2 text-sm"></i>
+                                    <div class="h-0.5 bg-gray-300 flex-1"></div>
+                                </div>
+                                <p class="text-xs text-green-600 mt-1 font-medium">Langsung</p>
+                            </div>
+                            <div class="text-center md:text-right">
+                                <p class="text-2xl font-bold text-gray-900">09:45</p>
+                                <p class="text-sm text-gray-500">DPS</p>
+                            </div>
+                        </div>
+
+                        <!-- Harga & Tombol -->
+                        <div class="w-full md:w-1/4 flex flex-col items-end border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
+                            <p class="text-sm text-gray-500 mb-1">Harga per penumpang</p>
+                            <p class="text-2xl font-bold text-accent mb-3">IDR 1.250.000</p>
+                            <button class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-md">Pilih</button>
+                        </div>
+                    </div>
+
+                    <!-- Flight Card 2 -->
+                    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between transition-all duration-300">
+                        <div class="flex items-center gap-4 w-full md:w-1/4 mb-4 md:mb-0">
+                            <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-plane text-red-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Lion Air</h4>
+                                <p class="text-sm text-gray-500">JT-730</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between w-full md:w-2/4 mb-4 md:mb-0 px-0 md:px-6">
+                            <div class="text-center md:text-left">
+                                <p class="text-2xl font-bold text-gray-900">12:00</p>
+                                <p class="text-sm text-gray-500">CGK</p>
+                            </div>
+                            <div class="flex flex-col items-center px-4 flex-1">
+                                <p class="text-sm text-gray-500 mb-1">1j 50m</p>
+                                <div class="w-full flex items-center">
+                                    <div class="h-0.5 bg-gray-300 flex-1"></div>
+                                    <i class="fa-solid fa-plane text-gray-400 mx-2 text-sm"></i>
+                                    <div class="h-0.5 bg-gray-300 flex-1"></div>
+                                </div>
+                                <p class="text-xs text-green-600 mt-1 font-medium">Langsung</p>
+                            </div>
+                            <div class="text-center md:text-right">
+                                <p class="text-2xl font-bold text-gray-900">13:50</p>
+                                <p class="text-sm text-gray-500">DPS</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/4 flex flex-col items-end border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
+                            <p class="text-sm text-gray-500 mb-1">Harga per penumpang</p>
+                            <p class="text-2xl font-bold text-accent mb-3">IDR 850.000</p>
+                            <button class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-md">Pilih</button>
+                        </div>
+                    </div>
+
+                    <!-- Flight Card 3 -->
+                    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between transition-all duration-300">
+                        <div class="flex items-center gap-4 w-full md:w-1/4 mb-4 md:mb-0">
+                            <div class="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-plane text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Batik Air</h4>
+                                <p class="text-sm text-gray-500">ID-6800</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between w-full md:w-2/4 mb-4 md:mb-0 px-0 md:px-6">
+                            <div class="text-center md:text-left">
+                                <p class="text-2xl font-bold text-gray-900">16:00</p>
+                                <p class="text-sm text-gray-500">CGK</p>
+                            </div>
+                            <div class="flex flex-col items-center px-4 flex-1">
+                                <p class="text-sm text-gray-500 mb-1">1j 45m</p>
+                                <div class="w-full flex items-center">
+                                    <div class="h-0.5 bg-gray-300 flex-1"></div>
+                                    <i class="fa-solid fa-plane text-gray-400 mx-2 text-sm"></i>
+                                    <div class="h-0.5 bg-gray-300 flex-1"></div>
+                                </div>
+                                <p class="text-xs text-green-600 mt-1 font-medium">Langsung</p>
+                            </div>
+                            <div class="text-center md:text-right">
+                                <p class="text-2xl font-bold text-gray-900">17:45</p>
+                                <p class="text-sm text-gray-500">DPS</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/4 flex flex-col items-end border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
+                            <p class="text-sm text-gray-500 mb-1">Harga per penumpang</p>
+                            <p class="text-2xl font-bold text-accent mb-3">IDR 1.050.000</p>
+                            <button class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow-md">Pilih</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. SECTION FITUR & KEUNGGULAN -->
+    <!-- ========================================== -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Mengapa Memesan di TerbangLebih?</h2>
+                <p class="text-lg text-gray-500 max-w-2xl mx-auto">Kami memberikan pengalaman terbaik untuk perjalanan Anda dengan layanan unggulan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Fitur 1 -->
+                <div class="flex flex-col items-center text-center p-6 rounded-2xl hover:bg-gray-50 transition duration-300">
+                    <div class="w-20 h-20 bg-blue-50 text-primary rounded-full flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fa-solid fa-shield-halved text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Pembayaran Aman</h3>
+                    <p class="text-gray-500 text-base">Transaksi dilindungi dengan enkripsi tingkat tinggi dan standar keamanan internasional.</p>
+                </div>
+
+                <!-- Fitur 2 -->
+                <div class="flex flex-col items-center text-center p-6 rounded-2xl hover:bg-gray-50 transition duration-300">
+                    <div class="w-20 h-20 bg-orange-50 text-accent rounded-full flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fa-solid fa-headset text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Layanan 24/7</h3>
+                    <p class="text-gray-500 text-base">Tim customer service kami siap membantu Anda kapan saja, baik sebelum maupun sesudah perjalanan.</p>
+                </div>
+
+                <!-- Fitur 3 -->
+                <div class="flex flex-col items-center text-center p-6 rounded-2xl hover:bg-gray-50 transition duration-300">
+                    <div class="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fa-solid fa-tags text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Harga Terbaik</h3>
+                    <p class="text-gray-500 text-base">Kami menjamin harga tiket pesawat paling kompetitif tanpa biaya tersembunyi.</p>
+                </div>
+
+                <!-- Fitur 4 -->
+                <div class="flex flex-col items-center text-center p-6 rounded-2xl hover:bg-gray-50 transition duration-300">
+                    <div class="w-20 h-20 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fa-solid fa-plane-circle-check text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Banyak Pilihan</h3>
+                    <p class="text-gray-500 text-base">Bekerja sama dengan ratusan maskapai terbaik domestik dan internasional.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. SECTION FAQ (ACCORDION) -->
+    <!-- ========================================== -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Pertanyaan yang Sering Diajukan</h2>
+                <p class="text-lg text-gray-500">Temukan jawaban cepat untuk pertanyaan umum seputar pemesanan tiket.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="faq-header w-full text-left px-6 py-5 flex justify-between items-center focus:outline-none">
+                        <span class="text-lg font-semibold text-gray-800">Bagaimana cara memesan tiket pesawat di TerbangLebih?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 text-base">
+                        <p>Memesan tiket sangat mudah. Cukup masukkan kota asal, kota tujuan, dan tanggal perjalanan Anda di halaman utama. Pilih penerbangan yang diinginkan, isi data penumpang, lalu selesaikan pembayaran. Tiket elektronik akan langsung dikirim ke email Anda.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="faq-header w-full text-left px-6 py-5 flex justify-between items-center focus:outline-none">
+                        <span class="text-lg font-semibold text-gray-800">Metode pembayaran apa saja yang tersedia?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 text-base">
+                        <p>Kami menerima berbagai metode pembayaran mulai dari Transfer Bank (BCA, Mandiri, BNI, BRI), Virtual Account, Kartu Kredit (Visa, Mastercard), hingga dompet digital seperti OVO, GoPay, dan Dana.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="faq-header w-full text-left px-6 py-5 flex justify-between items-center focus:outline-none">
+                        <span class="text-lg font-semibold text-gray-800">Bagaimana cara membatalkan atau menjadwal ulang (refund/reschedule) tiket?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 text-base">
+                        <p>Untuk pembatalan atau penjadwalan ulang, Anda dapat menghubungi layanan pelanggan kami 24/7 atau melalui menu "Pesanan Saya". Perlu diperhatikan bahwa kebijakan refund dan reschedule bergantung pada aturan masing-masing maskapai penerbangan.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="faq-header w-full text-left px-6 py-5 flex justify-between items-center focus:outline-none">
+                        <span class="text-lg font-semibold text-gray-800">Apakah data pribadi saya aman?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 text-base">
+                        <p>Sangat aman. Kami menggunakan sistem enkripsi SSL canggih untuk melindungi seluruh data pribadi dan informasi transaksi Anda. Kami tidak akan pernah membagikan data Anda kepada pihak ketiga tanpa izin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 7. FOOTER -->
+    <!-- ========================================== -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+                
+                <!-- Kolom 1: Brand -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="bg-primary text-white p-2 rounded-lg">
+                            <i class="fa-solid fa-plane-departure text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white tracking-tight">TerbangLebih</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 max-w-sm leading-relaxed">
+                        Platform pemesanan tiket pesawat dan akomodasi terpercaya di Indonesia. Terbang lebih mudah, jelajahi dunia bersama kami.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Kolom 2: Tentang Kami -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Tentang Kami</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-primary transition">Profil Perusahaan</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Karier</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+
+                <!-- Kolom 3: Bantuan -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Bantuan</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-primary transition">Pusat Bantuan</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Cara Pesan</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Status Penerbangan</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Refund & Reschedule</a></li>
+                    </ul>
+                </div>
+
+                <!-- Kolom 4: Kebijakan & Kontak -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Kebijakan & Kontak</h4>
+                    <ul class="space-y-3 mb-6">
+                        <li><a href="#" class="hover:text-primary transition">Kebijakan Privasi</a></li>
+                        <li><a href="#" class="hover:text-primary transition">Syarat & Ketentuan</a></li>
+                    </ul>
+                    <h5 class="text-white font-semibold mb-2">Layanan Pelanggan</h5>
+                    <p class="flex items-center gap-2 mb-1"><i class="fa-solid fa-envelope text-primary"></i> support@terbanglebih.com</p>
+                    <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-primary"></i> 0800-1-888-999</p>
+                </div>
+            </div>
+
+            <!-- Bagian Pembayaran -->
+            <div class="border-t border-gray-800 pt-8 mb-8">
+                <p class="text-sm text-gray-400 mb-4">Mitra Pembayaran Resmi:</p>
+                <div class="flex flex-wrap gap-4 items-center opacity-70">
+                    <!-- Simulasi Logo Pembayaran dengan Teks/FontAwesome -->
+                    <div class="bg-white px-3 py-1 rounded text-gray-800 font-bold italic text-sm">BCA</div>
+                    <div class="bg-white px-3 py-1 rounded text-gray-800 font-bold italic text-sm">MANDIRI</div>
+                    <div class="bg-white px-3 py-1 rounded text-gray-800 font-bold italic text-sm">BNI</div>
+                    <div class="bg-white px-3 py-1 rounded text-gray-800 font-bold italic text-sm">BRI</div>
+                    <div class="bg-white px-3 py-1 rounded text-blue-600 font-bold italic text-sm">VISA</div>
+                    <div class="bg-white px-3 py-1 rounded text-red-600 font-bold italic text-sm">Mastercard</div>
+                    <div class="bg-white px-3 py-1 rounded text-purple-600 font-bold italic text-sm">OVO</div>
+                    <div class="bg-white px-3 py-1 rounded text-green-500 font-bold italic text-sm">GoPay</div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2024 TerbangLebih. Hak Cipta Dilindungi.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition">Privasi</a>
+                    <a href="#" class="hover:text-white transition">Syarat</a>
+                    <a href="#" class="hover:text-white transition">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT INTERAKTIVITAS -->
+    <!-- ========================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Efek Navbar saat di-scroll
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-lg', 'bg-white/95', 'backdrop-blur-md', 'py-3');
+                    navbar.classList.remove('bg-white', 'py-4');
+                } else {
+                    navbar.classList.remove('shadow-lg', 'bg-white/95', 'backdrop-blur-md', 'py-3');
+                    navbar.classList.add('bg-white', 'py-4');
+                }
+            });
+
+            // 2. Tab Switching (Search Widget)
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Hapus kelas aktif dari semua tab
+                    tabBtns.forEach(t => {
+                        t.classList.remove('text-primary', 'border-primary');
+                        t.classList.add('text-gray-500', 'border-transparent');
+                    });
+                    // Tambahkan kelas aktif ke tab yang diklik
+                    btn.classList.remove('text-gray-500', 'border-transparent');
+                    btn.classList.add('text-primary', 'border-primary');
+                });
+            });
+
+            // 3. FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const header = item.querySelector('.faq-header');
+                header.addEventListener('click', () => {
+                    // Tutup semua FAQ lain (opsional, agar hanya satu yang terbuka)
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    // Toggle FAQ yang diklik
+                    item.classList.toggle('active');
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
