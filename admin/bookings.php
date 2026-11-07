@@ -123,7 +123,6 @@ if ($detail):
         </div>
         <div class="flex flex-wrap gap-2 items-center">
             <span class="text-xs font-semibold px-3 py-1.5 rounded-full border <?= e(status_badge((string) $detail['status'])) ?>"><?= e(status_label((string) $detail['status'])) ?></span>
-            <?php if ((int) $detail['leg_count'] ?? 0): ?><?php endif; ?>
         </div>
     </div>
 

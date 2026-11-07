@@ -23,10 +23,21 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 
+    // BASE_URL may be a full URL (APP_URL) or a path prefix. Cookies only
+    // accept the path component, so extract it instead of using the URL as-is.
+    $cookiePath = '/';
+    if (BASE_URL !== '') {
+        $cookiePath = (string) (parse_url(BASE_URL, PHP_URL_PATH) ?? '/');
+        $cookiePath = '/' . trim($cookiePath, '/');
+        if ($cookiePath !== '/') {
+            $cookiePath .= '/';
+        }
+    }
+
     session_name(SESSION_NAME);
     session_set_cookie_params([
         'lifetime' => SESSION_LIFETIME,
-        'path'     => BASE_URL !== '' ? BASE_URL . '/' : '/',
+        'path'     => $cookiePath,
         'domain'   => '',
         'secure'   => $isHttps,
         'httponly' => true,

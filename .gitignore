@@ -1,0 +1,16 @@
+# Runtime / local files
+/vendor/
+/.env
+/storage/php-error.log
+/storage/mail/*
+!/storage/mail/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/uploads/proofs/*
+!/uploads/proofs/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

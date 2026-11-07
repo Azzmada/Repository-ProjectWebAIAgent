@@ -14,10 +14,17 @@ require_once __DIR__ . '/functions.php';
 
 function absolute_url(string $path = ''): string
 {
+    $path = $path !== '' ? '/' . ltrim($path, '/') : '';
+
+    // BASE_URL may already be an absolute URL (APP_URL), in which case it
+    // must be used as-is instead of prefixing the current host again.
+    if (preg_match('#^https?://#i', BASE_URL)) {
+        return rtrim(BASE_URL, '/') . $path;
+    }
+
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $path = $path !== '' ? '/' . ltrim($path, '/') : '';
-    return $scheme . '://' . $host . BASE_URL . $path;
+    return $scheme . '://' . $host . rtrim(BASE_URL, '/') . $path;
 }
 
 /**

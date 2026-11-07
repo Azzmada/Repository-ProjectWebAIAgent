@@ -42,6 +42,10 @@ function upload_url(string $path): string
 function page_url(string $page, array $params = []): string
 {
     if (PRETTY_URLS) {
+        // The home page lives at the document root ("/"), not at "/home".
+        if ($page === 'home') {
+            return base_url('/');
+        }
         $query = $params ? '?' . http_build_query($params) : '';
         return base_url($page . $query);
     }
@@ -789,7 +793,7 @@ function validate_promo(string $code, float $subtotal, ?int $userId = null): arr
 
     if ($userId !== null) {
         $already = Database::fetch(
-            'SELECT id FROM promo_usage pu JOIN bookings b ON b.id = pu.booking_id
+            'SELECT pu.id FROM promo_usage pu JOIN bookings b ON b.id = pu.booking_id
              WHERE pu.promo_id = ? AND b.user_id = ? AND b.status IN ("pending","paid") LIMIT 1',
             [(int) $promo['id'], $userId]
         );

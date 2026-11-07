@@ -1,0 +1,55 @@
+# ============================================================
+# TerbangLebih — Apache configuration
+# ============================================================
+# Works both at the domain root and in a subfolder. Clean URLs are
+# optional: enable APP_PRETTY=1 so the application emits /pesawat,
+# /promo and /bantuan links.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Never serve configuration, SQL dumps or runtime storage over HTTP.
+    RewriteRule ^(?:config|database|storage)(?:/|$) - [F,L,NC]
+
+    # Defence in depth: uploads may only contain images/PDFs.
+    RewriteRule ^uploads/.*\.(?:php[0-9]?|phtml|phar)$ - [F,L,NC]
+
+    # Let real files and directories (assets, uploads, endpoints) through.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Optional pretty URLs.
+    RewriteRule ^(home|pesawat|promo|bantuan)/?$ index.php?page=$1 [QSA,L]
+</IfModule>
+
+# Block hidden files such as .env, .git and .htaccess itself.
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block sensitive file types that should never be downloaded.
+<FilesMatch "\.(?:env|ini|log|sql|bak|old|orig|dist|lock)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Basic hardening headers (Apache 2.4+).
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

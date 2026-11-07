@@ -16,6 +16,29 @@ $pricing = $pricing ?? ['subtotal' => 0, 'discount' => 0, 'total' => 0, 'per_typ
 $counts = $counts ?? ['adult' => 1, 'child' => 0, 'infant' => 0];
 $cabin = $cabin ?? 'Ekonomi';
 $promoState = $promoState ?? null;
+
+// The checkout steps pass legs from booking_legs_from_ids() (nested "flight"),
+// while payment/instruction pass the flattened get_booking_legs() rows.
+// Normalise both shapes so the card works everywhere.
+$legs = $legs ?? [];
+$normalizedLegs = [];
+foreach ($legs as $index => $leg) {
+    if (!is_array($leg)) {
+        continue;
+    }
+    if (isset($leg['flight']) && is_array($leg['flight'])) {
+        $normalizedLegs[] = $leg;
+        continue;
+    }
+    $normalizedLegs[] = [
+        'flight'    => $leg,
+        'flight_id' => (int) ($leg['flight_id'] ?? $leg['id'] ?? 0),
+        'date'      => (string) ($leg['travel_date'] ?? $leg['date'] ?? ''),
+        'price'     => (float) ($leg['price'] ?? 0),
+        'order'     => (int) ($leg['leg_order'] ?? $leg['order'] ?? $index + 1),
+    ];
+}
+$legs = $normalizedLegs;
 ?>
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="bg-gradient-to-r from-primary to-cyan-500 px-5 py-4">
